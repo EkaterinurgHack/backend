@@ -1,40 +1,53 @@
 import pandas as pd
 from collections import defaultdict
 
-from app.schemas.scoreboard import Record, Scoreboard, AddRecord
+from app.schemas.scoreboard import Record, Scoreboard, AddRecord, GameScoreboard
 
-scoreboard = defaultdict(list)
+game_scoreboards = [defaultdict(list) for i in range(3)]
 
-scoreboard[1] = ["user1", 100]
-scoreboard[2] = ["user2", 500]
-scoreboard[3] = ["user3", 300]
-scoreboard[4] = ["user4", 300]
+game_scoreboards[0][1] = ["user1", 100]
+game_scoreboards[0][2] = ["user2", 500]
+game_scoreboards[0][3] = ["user3", 300]
+game_scoreboards[0][4] = ["user4", 300]
+game_scoreboards[1][1] = ["user1", 100]
+game_scoreboards[1][2] = ["user2", 500]
+game_scoreboards[1][3] = ["user3", 300]
+game_scoreboards[1][4] = ["user4", 300]
+game_scoreboards[2][1] = ["user1", 100]
+game_scoreboards[2][2] = ["user2", 500]
+game_scoreboards[2][3] = ["user3", 300]
+game_scoreboards[2][4] = ["user4", 300]
 
 class ScoreboardService():
     def __init__(self):
         pass
 
     async def add_record(self, record: AddRecord):
+        game_id = record.game_id
         user_id = record.user_id
-        if user_id in scoreboard:
-            value = scoreboard[user_id][1]
-            scoreboard[user_id][1] = max(value, record.score)
-            scoreboard[user_id][0] = record.nickname
+        if user_id in game_scoreboards[game_id]:
+            value = game_scoreboards[game_id][user_id][1]
+            game_scoreboards[game_id][user_id][1] = max(value, record.score)
+            game_scoreboards[game_id][user_id][0] = record.nickname
         else:
-            scoreboard[user_id] = [record.nickname, record.score]
+            game_scoreboards[game_id][user_id] = [record.nickname, record.score]
         return record
 
     async def get_scoreboard(self):
-        scores = sorted([[key, *value] for key, value in scoreboard.items()], key=lambda x: x[2], reverse=True)
-        df = pd.DataFrame(scores, columns=['id', 'nickname', 'score'])
-        df['rank'] = df['score'].rank(method='min', ascending=False).astype(int)
-        scores = df.values.tolist()
-        print(scores)
+        scores = [sorted([[key, *value] for key, value in game_scoreboards[i].items()], key=lambda x: x[2], reverse=True) for i in range(len(game_scoreboards))]
+        dfs = [pd.DataFrame(scores[i], columns=['id', 'nickname', 'score']) for i in range(len(game_scoreboards))]
+        for i in range(len(game_scoreboards)):
+            dfs[i]['rank'] = dfs[i]['score'].rank(method='min', ascending=False).astype(int)
+        scores = [dfs[i].values.tolist() for i in range(len(game_scoreboards))]
         return Scoreboard(
-            scores=[Record(
-                rank=score[3],
-                user_id=score[0],
-                nickname=score[1],
-                score=score[2]
-            ) for score in scores]
+            scoreboards=[
+                GameScoreboard(
+                    scores=[
+                        Record(
+                            rank=score[3],
+                            user_id=score[0],
+                            nickname=score[1],
+                            score=score[2]
+                        ) for score in scores[i]] 
+                ) for i in range(len(game_scoreboards))]
         )

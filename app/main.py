@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.schemas.user import UserInfo
-from app.schemas.scoreboard import Scoreboard, Record, AddRecord
+from app.schemas.scoreboard import Scoreboard, Record, AddRecord, GameScoreboard
 
 from app.services.user import UserService
 from app.services.scoreboard import ScoreboardService
