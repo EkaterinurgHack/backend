@@ -33,6 +33,10 @@ def read_post():
 async def get_info(user_service: UserService = Depends()):
     return await user_service.get_data()
 
+@app.get('/scoreboard/{game_id}', response_model=GameScoreboard)
+async def get_scoreboard_by_id(game_id: int, scoreboard_service: ScoreboardService = Depends()):
+    return await scoreboard_service.get_scoreboard_by_id(game_id)
+
 @app.get('/scoreboard', response_model=Scoreboard)
 async def get_scoreboard(scoreboard_service: ScoreboardService = Depends()):
     return await scoreboard_service.get_scoreboard()

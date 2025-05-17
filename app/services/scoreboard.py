@@ -51,3 +51,18 @@ class ScoreboardService():
                         ) for score in scores[i]] 
                 ) for i in range(len(game_scoreboards))]
         )
+    
+    async def get_scoreboard_by_id(self, game_id: int):
+        scores = sorted([[key, *value] for key, value in game_scoreboards[game_id].items()], key=lambda x: x[2], reverse=True)
+        df = pd.DataFrame(scores, columns=['id', 'nickname', 'score'])
+        df['rank'] = df['score'].rank(method='min', ascending=False).astype(int)
+        scores = df.values.tolist()
+        return GameScoreboard(
+            scores=[
+                Record(
+                    rank=score[3],
+                    user_id=score[0],
+                    nickname=score[1],
+                    score=score[2]
+            ) for score in scores] 
+        ) 
