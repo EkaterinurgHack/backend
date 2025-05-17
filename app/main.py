@@ -16,8 +16,8 @@ app.add_middleware(
 )
 
 @app.get('/')
-def read_get_with_params(user_id: int, nickname: str):
-    return {"userId": user_id, "nickname": nickname}
+def read_get_with_params(userId: int, nickname: str):
+    return {"userId": userId, "nickname": nickname}
 
 @app.get("/")
 def read_get():
