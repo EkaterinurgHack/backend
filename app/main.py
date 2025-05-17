@@ -15,6 +15,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get('/')
+def read_get_with_params(user_id: int, nickname: str):
+    return {"userId": user_id, "nickname": nickname}
+
 @app.get("/")
 def read_get():
     return {"message": "GET handler working"}
