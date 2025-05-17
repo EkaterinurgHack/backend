@@ -1,9 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
+
+from app.schemas.user import UserInfo
+
+from app.services.user import UserService
 
 app = FastAPI()
 
-# Отключаем CORS — разрешаем все origins, методы и заголовки
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,3 +22,7 @@ def read_get():
 @app.post("/")
 def read_post():
     return {"message": "POST handler working"}
+
+@app.get('/get_data', response_model=UserInfo)
+async def get_info(user_service: UserService = Depends()):
+    return await user_service.get_data()
