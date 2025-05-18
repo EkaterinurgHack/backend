@@ -30,8 +30,8 @@ def read_post():
     return {"message": "POST handler working"}
 
 @app.get('/get_data/{userId}')
-async def get_games_played(user_id: int, scoreboard_service: ScoreboardService = Depends()):
-    return await scoreboard_service.get_games_played(user_id)
+async def get_games_played(userId: int, scoreboard_service: ScoreboardService = Depends()):
+    return await scoreboard_service.get_games_played(userId)
 
 @app.get('/get_data', response_model=UserInfo)
 async def get_info(user_service: UserService = Depends()):
