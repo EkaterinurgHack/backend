@@ -3,7 +3,7 @@ from collections import defaultdict
 
 from app.schemas.scoreboard import Record, Scoreboard, AddRecord, GameScoreboard, AddGamesPlayed
 
-game_scoreboards = [defaultdict(list) for i in range(3)]
+game_scoreboards = [defaultdict(list) for i in range(4)]
 games_played = defaultdict(list)
 
 game_scoreboards[0][1] = ["user1", 100]
@@ -18,6 +18,10 @@ game_scoreboards[2][1] = ["user1", 100]
 game_scoreboards[2][2] = ["user2", 500]
 game_scoreboards[2][3] = ["user3", 300]
 game_scoreboards[2][4] = ["user4", 300]
+game_scoreboards[3][1] = ["user1", 100]
+game_scoreboards[3][2] = ["user2", 500]
+game_scoreboards[3][3] = ["user3", 300]
+game_scoreboards[3][4] = ["user4", 300]
 
 class ScoreboardService():
     def __init__(self):
