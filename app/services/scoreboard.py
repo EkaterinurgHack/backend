@@ -1,9 +1,10 @@
 import pandas as pd
 from collections import defaultdict
 
-from app.schemas.scoreboard import Record, Scoreboard, AddRecord, GameScoreboard
+from app.schemas.scoreboard import Record, Scoreboard, AddRecord, GameScoreboard, AddGamesPlayed
 
 game_scoreboards = [defaultdict(list) for i in range(3)]
+games_played = defaultdict(list)
 
 game_scoreboards[0][1] = ["user1", 100]
 game_scoreboards[0][2] = ["user2", 500]
@@ -66,3 +67,9 @@ class ScoreboardService():
                     score=score[2]
             ) for score in scores] 
         ) 
+    
+    async def get_games_played(self, user_id: int):
+        return games_played[user_id]
+    
+    async def set_games_played(self, add_games_played: AddGamesPlayed):
+        games_played[add_games_played.user_id] = add_games_played.user_played

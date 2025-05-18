@@ -26,3 +26,9 @@ class Scoreboard(BaseModel):
     scoreboards: list[GameScoreboard]
 
     model_config = ConfigDict(from_attributes=True, alias_generator=to_camel, populate_by_name=True)
+
+class AddGamesPlayed(BaseModel):
+    user_id: int
+    user_played: list[int]
+
+    model_config = ConfigDict(from_attributes=True, alias_generator=to_camel, populate_by_name=True)

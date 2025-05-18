@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.schemas.user import UserInfo
-from app.schemas.scoreboard import Scoreboard, Record, AddRecord, GameScoreboard
+from app.schemas.scoreboard import Scoreboard, AddRecord, GameScoreboard, AddGamesPlayed
 
 from app.services.user import UserService
 from app.services.scoreboard import ScoreboardService
@@ -29,6 +29,10 @@ def read_get():
 def read_post():
     return {"message": "POST handler working"}
 
+@app.get('/get_data/{userId}')
+async def get_games_played(user_id: int, scoreboard_service: ScoreboardService = Depends()):
+    return await scoreboard_service.get_games_played(user_id)
+
 @app.get('/get_data', response_model=UserInfo)
 async def get_info(user_service: UserService = Depends()):
     return await user_service.get_data()
@@ -44,3 +48,7 @@ async def get_scoreboard(scoreboard_service: ScoreboardService = Depends()):
 @app.post('/result', response_model=AddRecord)
 async def add_record(record: AddRecord, scoreboard_service: ScoreboardService = Depends()):
     return await scoreboard_service.add_record(record)
+
+@app.post('/update_played')
+async def set_games_played(add_games_played: AddGamesPlayed, scoreboard_service: ScoreboardService = Depends()):
+    return await scoreboard_service.set_games_played(add_games_played)
