@@ -28,7 +28,7 @@ class ScoreboardService():
         pass
 
     async def add_record(self, record: AddRecord):
-        game_id = record.game_id
+        game_id = (record.game_id - 1) % 4
         user_id = record.user_id
         if user_id in game_scoreboards[game_id]:
             value = game_scoreboards[game_id][user_id][1]
