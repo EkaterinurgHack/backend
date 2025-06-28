@@ -3,9 +3,13 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.schemas.user import UserInfo
 from app.schemas.scoreboard import Scoreboard, AddRecord, GameScoreboard, AddGamesPlayed
+from app.schemas.log import LogRecord
 
 from app.services.user import UserService
 from app.services.scoreboard import ScoreboardService
+
+import logging
+from logging.handlers import RotatingFileHandler
 
 app = FastAPI()
 
@@ -15,6 +19,19 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+logging.basicConfig(
+    level=logging.ERROR,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        RotatingFileHandler(
+            "/home/python/logs/website_errors.log",
+            maxBytes=10*1024*1024,
+            backupCount=5,
+            encoding="utf-8"
+        ),
+    ]
 )
 
 @app.get('/')
@@ -52,3 +69,15 @@ async def add_record(record: AddRecord, scoreboard_service: ScoreboardService = 
 @app.post('/update_played')
 async def set_games_played(add_games_played: AddGamesPlayed, scoreboard_service: ScoreboardService = Depends()):
     return await scoreboard_service.set_games_played(add_games_played)
+
+@app.post('/error')
+async def make_log(record: LogRecord):
+    try:
+        logging.error(
+                f"Error for user {record.name}\n"
+                f"Message: {record.message}\n"
+                f"When: {record.when}"
+            )
+        return "success"
+    except:
+        return "error"

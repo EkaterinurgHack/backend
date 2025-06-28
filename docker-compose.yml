@@ -3,6 +3,8 @@ version: '3.8'
 services:
   web:
     build: .
+    volumes:
+      - /home/fabulon/logs/le_tg_bot:/home/python/logs/ 
     container_name: fastapi_app
     restart: always
     ports:
